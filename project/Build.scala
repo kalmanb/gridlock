@@ -4,7 +4,7 @@ import sbt.Defaults._
 
 object LockManager extends Build {
   lazy val projectName = "akka-lockmanager"
-  lazy val ProjectVersion = "0.1.0"
+  lazy val ProjectVersion = "0.2.0-SNAPSHOT"
 
   lazy val akkaVersion = "2.1.2"
 
@@ -34,8 +34,16 @@ object LockManager extends Build {
         scalaTest,
         junit,
         mockito
-        )
+        ),
+      publishTo <<= version { (v: String) =>
+        val repo = "http://dev.movio.co:8081/artifactory/"
+        if (v.trim.endsWith("SNAPSHOT"))
+          Some("movio snapshots" at repo + "libs-snapshot-local")
+        else
+          Some("movio releases"  at repo + "libs-release-local")
+      }
+
+      )
     )
-  )
 }
 
