@@ -4,7 +4,7 @@ import sbt.Defaults._
 
 object LockManager extends Build {
   lazy val projectName = "akka-lockmanager"
-  lazy val ProjectVersion = "0.1.0-SNAPSHOT"
+  lazy val ProjectVersion = "0.1.0"
 
   lazy val akkaVersion = "2.1.2"
 
@@ -34,9 +34,8 @@ object LockManager extends Build {
         scalaTest,
         junit,
         mockito
-      )
-    ) 
+        )
+    )
   )
-
 }
 
