@@ -22,7 +22,7 @@ class LockableActorTest extends AkkaSpec {
 
     it("should do 'work' if it gets a lock") {
       val lockManager = system.actorOf(Props(new Actor {
-        def receive = { case RequestLock(_, _) ⇒ sender ! LockAquired }
+        def receive = { case RequestLock(_, _) ⇒ sender ! LockAcquired }
       }))
 
       val latch = new CountDownLatch(1)

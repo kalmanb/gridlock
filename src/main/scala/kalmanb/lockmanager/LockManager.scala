@@ -12,9 +12,8 @@ object LockManager {
   case class ReleaseLock(id: Any)
   case class LockTimeout(id: Any)
   
-//  sealed trait LockResult
-  case object LockAquired//extends LockResult
-  case object NoLockAvailable //extends LockResult
+  case object LockAcquired
+  case object NoLockAvailable
 }
 
 class LockManager extends Actor with ActorLogging {
@@ -28,7 +27,7 @@ class LockManager extends Actor with ActorLogging {
       if (locks contains (hashCode))
         sender ! NoLockAvailable
       else {
-        aquireLock(id, autoReleaseAfter)
+        acquireLock(id, autoReleaseAfter)
       }
     }
     case ReleaseLock(id) ⇒ releaseLock(id)
@@ -57,13 +56,13 @@ class LockManager extends Actor with ActorLogging {
     }
   }
 
-  private def aquireLock(id: Any, autoReleaseAfter: Option[FiniteDuration]) {
+  private def acquireLock(id: Any, autoReleaseAfter: Option[FiniteDuration]) {
     val lockTimeout = autoReleaseAfter match {
       case Some(delay) ⇒ Some(context.system.scheduler.scheduleOnce(delay, self, LockTimeout(id)))
       case _           ⇒ None
     }
     locks put (id.hashCode, lockTimeout)
     log.info(s"Aquired Lock for id: $id")
-    sender ! LockAquired
+    sender ! LockAcquired
   }
 }

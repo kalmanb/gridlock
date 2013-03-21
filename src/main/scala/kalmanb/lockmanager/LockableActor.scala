@@ -27,7 +27,7 @@ abstract class LockableActor(lockManager: ActorRef, lockWaitTimeout: FiniteDurat
         result ← (lockManager ? RequestLock(lockId(message)))
       } yield {
         result match {
-          case LockAquired ⇒ {
+          case LockAcquired ⇒ {
             work(message, lockId(message))
           }
           case NoLockAvailable ⇒ noLock(message, lockId(message))
@@ -46,7 +46,7 @@ abstract class LockableActor(lockManager: ActorRef, lockWaitTimeout: FiniteDurat
   /** Override this to with what to do once we have a lock */
   def work(message: Any, id: Any) {}
 
-  /** Override this to with what to do if we could not aquire a lock */
+  /** Override this to with what to do if we could not acquire a lock */
   def noLock(message: Any, id: Any) {}
 
 }
