@@ -11,8 +11,10 @@ object LockManager {
   case class RequestLock(id: Any, autoReleaseAfter: Option[FiniteDuration] = None)
   case class ReleaseLock(id: Any)
   case class LockTimeout(id: Any)
-  object LockAquired
-  object NoLockAvailable
+  
+//  sealed trait LockResult
+  case object LockAquired//extends LockResult
+  case object NoLockAvailable //extends LockResult
 }
 
 class LockManager extends Actor with ActorLogging {
@@ -35,7 +37,6 @@ class LockManager extends Actor with ActorLogging {
       lockTimeout(id)
       releaseLock(id)
     }
-
   }
 
   /** This can be overridden with preferred behavior */
