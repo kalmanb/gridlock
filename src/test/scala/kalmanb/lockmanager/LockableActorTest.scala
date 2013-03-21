@@ -8,7 +8,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration._
 
-class LockableTest extends AkkaSpec {
+class LockableActorTest extends AkkaSpec {
   import LockManager._
 
   describe("lockable") {
