@@ -1,8 +1,14 @@
 package kalmanb.lockmanager
 
+import scala.concurrent.duration.DurationInt
+
+import LockManager.LockAcquired
+import LockManager.NoLockAvailable
+import LockManager.ReleaseLock
+import LockManager.RequestLock
 import akka.actor.Props
+import akka.actor.actorRef2Scala
 import akka.testkit.TestActorRef
-import scala.concurrent.duration._
 
 class LockManagerTest extends AkkaSpec {
   import LockManager._

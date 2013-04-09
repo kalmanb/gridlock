@@ -1,12 +1,20 @@
 package kalmanb.lockmanager
 
-import akka.actor.Props
-import akka.actor.Actor
-import akka.testkit.TestActorRef
-import akka.testkit.TestProbe
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import scala.concurrent.duration._
+
+import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+
+import LockManager.LockAcquired
+import LockManager.NoLockAvailable
+import LockManager.ReleaseLock
+import LockManager.RequestLock
+import akka.actor.Actor
+import akka.actor.Props
+import akka.actor.actorRef2Scala
+import akka.testkit.TestActorRef
+import akka.testkit.TestProbe
 
 class LockableActorTest extends AkkaSpec {
   import LockManager._
@@ -14,7 +22,9 @@ class LockableActorTest extends AkkaSpec {
   describe("lockable") {
     it("should request a lock from the manager") {
       val lockManager = TestProbe()
-      val lockingWorker = TestActorRef[LockableActor](Props(new LockableActor(lockManager.ref) {}))
+      val lockingWorker = TestActorRef[LockableActor](Props(new LockableActor(lockManager.ref) {
+        def work(message: Any, id: Any) = Future()
+      }))
       lockingWorker ! "Start"
 
       lockManager.expectMsg(RequestLock(lockingWorker.underlyingActor.lockId("")))
@@ -22,13 +32,13 @@ class LockableActorTest extends AkkaSpec {
 
     it("should do 'work' if it gets a lock") {
       val lockManager = system.actorOf(Props(new Actor {
-        def receive = { case RequestLock(_, _) ⇒ sender ! LockAcquired }
+        def receive = { case RequestLock(_, _, _) ⇒ sender ! LockAcquired }
       }))
 
       val latch = new CountDownLatch(1)
       val lockingWorker = TestActorRef[LockableActor](Props(new LockableActor(lockManager) {
-        override def work(message: Any, id: Any) {
-          latch.countDown
+        def work(message: Any, id: Any) = {
+          Future(latch.countDown)
         }
       }))
       lockingWorker ! "Start"
@@ -41,9 +51,10 @@ class LockableActorTest extends AkkaSpec {
       val lockManager = system.actorOf(Props(new Actor {
         def receive = { case _ ⇒ sender ! NoLockAvailable }
       }))
-      
+
       val latch = new CountDownLatch(1)
       val lockingWorker = TestActorRef[LockableActor](Props(new LockableActor(lockManager) {
+        def work(message: Any, id: Any) = Future()
         override def noLock(message: Any, id: Any) {
           latch.countDown
         }
@@ -58,12 +69,14 @@ class LockableActorTest extends AkkaSpec {
       val latch = new CountDownLatch(1)
       val slowLockManager = TestActorRef(Props(new Actor {
         def receive = {
-          case RequestLock(_, _) ⇒ // don't respond to worker - let it timeout
-          case ReleaseLock(_)    ⇒ latch.countDown
+          case RequestLock(_, _, _) ⇒ // don't respond to worker - let it timeout
+          case ReleaseLock(_)       ⇒ latch.countDown
         }
       }))
 
-      val lockingWorker = TestActorRef[LockableActor](Props(new LockableActor(slowLockManager, 10 milliseconds) {}))
+      val lockingWorker = TestActorRef[LockableActor](Props(new LockableActor(slowLockManager, 10 milliseconds) {
+        def work(message: Any, id: Any) = Future()
+      }))
       lockingWorker ! "Start"
 
       latch.await(2000, TimeUnit.MILLISECONDS)

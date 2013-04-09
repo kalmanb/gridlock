@@ -14,7 +14,7 @@ object LockManager extends Build {
   lazy val akkaTestKit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion
 
   lazy val slf4j = "org.slf4j" % "slf4j-api" % "1.7.2"
-  //lazy val scalaTest = "org.scalatest" %% "scalatest" % "2.0.M6-SNAP9" % "test"
+// lazy val scalaTest = "org.scalatest" %% "scalatest" % "2.0.M6-SNAP12" % "test"
   lazy val scalaTest = "org.scalatest" %% "scalatest" % "2.0.M5b" % "test"
   lazy val junit = "junit" % "junit" % "4.11" % "test"
   lazy val mockito = "org.mockito" % "mockito-all" % "1.9.5" % "test"
@@ -34,16 +34,8 @@ object LockManager extends Build {
         scalaTest,
         junit,
         mockito
-        ),
-      publishTo <<= version { (v: String) =>
-        val repo = "http://dev.movio.co:8081/artifactory/"
-        if (v.trim.endsWith("SNAPSHOT"))
-          Some("movio snapshots" at repo + "libs-snapshot-local")
-        else
-          Some("movio releases"  at repo + "libs-release-local")
-      }
-
       )
     )
+  )
 }
 

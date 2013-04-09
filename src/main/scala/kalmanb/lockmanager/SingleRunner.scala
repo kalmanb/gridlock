@@ -6,15 +6,14 @@ import scala.concurrent.duration._
 import java.util.UUID
 import akka.util.Timeout
 import akka.actor.ActorLogging
+import scala.concurrent.Future
 
 /**
  * This is designed to only run a single long running process at a time.
  * If it cannot acquire a lock because it is already running or the lock
- * request times out the message will be dropped. 
- * 
- * Often used for repeated tasks that get run regularly
+ * request times out the message will be dropped.
  *
- * Must remember to return the ReleaseLock when work is complete!!
+ * Often used for repeated tasks that get run regularly
  */
 abstract class SingleRunner(
   lockManager: ActorRef,
@@ -31,21 +30,17 @@ abstract class SingleRunner(
   implicit def executionContext = context.dispatcher
 
   def receive = {
-    case message: Any ⇒ {
+    case message: Any ⇒
       for {
         result ← (lockManager ? RequestLock(lockId(message)))
-      } yield {
-        result match {
-          case LockAcquired ⇒ {
-            work(message, lockId(message))
-          }
-        }
+      } yield result match {
+        case LockAcquired ⇒
+          work(message, lockId(message)).onComplete(_ => releaseLock(lockId(message)))
       }
-    }
   }
 
   /** Override this to with what to do once we have a lock */
-  def work(message: Any, id: Any)
+  def work(message: Any, id: Any):Future[Unit]
 
   def releaseLock(id: Any) {
     lockManager ! ReleaseLock(id)

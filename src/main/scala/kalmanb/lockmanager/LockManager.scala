@@ -8,7 +8,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import akka.actor.Cancellable
 
 object LockManager {
-  case class RequestLock(id: Any, autoReleaseAfter: Option[FiniteDuration] = None)
+  case class RequestLock(id: Any, autoReleaseAfter: Option[FiniteDuration] = None, acquireTimeOut:Option[FiniteDuration] = None)
   case class ReleaseLock(id: Any)
   case class LockTimeout(id: Any)
   
@@ -22,7 +22,7 @@ class LockManager extends Actor with ActorLogging {
   val locks = mutable.Map.empty[Int, Option[Cancellable]]
 
   def receive = {
-    case RequestLock(id, autoReleaseAfter) ⇒ {
+    case RequestLock(id, autoReleaseAfter, acquireTimeout) ⇒ {
       val hashCode = id.hashCode
       if (locks contains (hashCode))
         sender ! NoLockAvailable
