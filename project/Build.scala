@@ -3,7 +3,7 @@ import Keys._
 import sbt.Defaults._
 
 object LockManager extends Build {
-  lazy val projectName = "akka-lockmanager"
+  lazy val projectName = "gridlock"
   lazy val ProjectVersion = "0.2.0-SNAPSHOT"
 
   lazy val akkaVersion = "2.1.2"
