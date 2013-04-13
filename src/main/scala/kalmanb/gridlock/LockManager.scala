@@ -14,6 +14,8 @@ object LockManager {
   
   case object LockAcquired
   case object NoLockAvailable
+  
+  def hash(lockId: Any) = lockId.hashCode + lockId.getClass.getName.hashCode
 }
 
 class LockManager extends Actor with ActorLogging {
@@ -23,7 +25,7 @@ class LockManager extends Actor with ActorLogging {
 
   def receive = {
     case RequestLock(id, autoReleaseAfter, acquireTimeout) ⇒ {
-      val hashCode = LockHash.hash(id)
+      val hashCode = hash(id)
       if (locks contains (hashCode))
         sender ! NoLockAvailable
       else {
@@ -44,13 +46,14 @@ class LockManager extends Actor with ActorLogging {
   }
 
   def releaseLock(id: Any) {
-    locks get id.hashCode match {
+    val hashCode = hash(id)
+    locks get hashCode match {
       case Some(lock) ⇒ {
         lock match {
           case Some(lockTimeout) ⇒ lockTimeout.cancel
           case None              ⇒
         }
-        locks remove id.hashCode
+        locks remove hashCode
       }
       case None ⇒ log.error(s"Tried to remove a lock that doesn't exist for id: $id")
     }
@@ -61,8 +64,8 @@ class LockManager extends Actor with ActorLogging {
       case Some(delay) ⇒ Some(context.system.scheduler.scheduleOnce(delay, self, LockTimeout(id)))
       case _           ⇒ None
     }
-    locks put (id.hashCode, lockTimeout)
-    log.info(s"Aquired Lock for id: $id")
+    locks put (hash(id), lockTimeout)
+    log.debug(s"Aquired Lock for id: $id")
     sender ! LockAcquired
   }
 }

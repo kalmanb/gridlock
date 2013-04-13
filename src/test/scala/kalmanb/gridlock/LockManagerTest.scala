@@ -11,7 +11,7 @@ import akka.testkit.TestActorRef
 import kalmanb.gridlock.util.AkkaSpec
 
 class LockManagerTest extends AkkaSpec {
-import LockManager._
+  import LockManager._
 
   describe("lock manager") {
     val anId = "id"
@@ -108,6 +108,22 @@ import LockManager._
          * scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104)
          *
          */
+      }
+    }
+    
+    describe("lock hash") {
+      it("the issue - normally different classes with the same content have the same hash code") {
+        case class A(id: Int)
+        case class B(name: Int)
+
+        new A(123).hashCode should be(new B(123).hashCode)
+      }
+
+      it("should treat different classes with the same content as different") {
+        case class A(id: Int)
+        case class B(id: Int)
+
+        hash(new A(123)) should not be (hash(new B(123)))
       }
     }
 
