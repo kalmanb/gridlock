@@ -1,4 +1,4 @@
-package kalmanb.lockmanager
+package kalmanb.gridlock
 
 import org.scalatest.Finders
 import org.scalatest.FunSpec

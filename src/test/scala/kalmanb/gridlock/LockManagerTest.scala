@@ -1,4 +1,4 @@
-package kalmanb.lockmanager
+package kalmanb.gridlock
 
 import scala.concurrent.duration.DurationInt
 
@@ -11,7 +11,7 @@ import akka.actor.actorRef2Scala
 import akka.testkit.TestActorRef
 
 class LockManagerTest extends AkkaSpec {
-  import LockManager._
+import LockManager._
 
   describe("lock manager") {
     val anId = "id"

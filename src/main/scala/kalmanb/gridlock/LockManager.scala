@@ -1,4 +1,4 @@
-package kalmanb.lockmanager
+package kalmanb.gridlock
 
 import akka.actor.Actor
 import akka.actor.ActorLogging
@@ -23,7 +23,7 @@ class LockManager extends Actor with ActorLogging {
 
   def receive = {
     case RequestLock(id, autoReleaseAfter, acquireTimeout) ⇒ {
-      val hashCode = id.hashCode
+      val hashCode = LockHash.hash(id)
       if (locks contains (hashCode))
         sender ! NoLockAvailable
       else {

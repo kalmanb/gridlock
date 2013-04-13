@@ -1,4 +1,4 @@
-package kalmanb.lockmanager
+package kalmanb.gridlock
 
 import akka.actor.{ Actor, ActorRef }
 import akka.pattern.ask

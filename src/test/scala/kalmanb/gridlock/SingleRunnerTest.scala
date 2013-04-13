@@ -1,4 +1,4 @@
-package kalmanb.lockmanager
+package kalmanb.gridlock
 
 class SingleRunnerTest extends AkkaSpec {
 

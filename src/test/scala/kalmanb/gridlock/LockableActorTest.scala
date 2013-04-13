@@ -1,4 +1,4 @@
-package kalmanb.lockmanager
+package kalmanb.gridlock
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
