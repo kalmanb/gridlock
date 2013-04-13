@@ -2,10 +2,8 @@ package kalmanb.gridlock
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
-
 import LockManager.LockAcquired
 import LockManager.NoLockAvailable
 import LockManager.ReleaseLock
@@ -15,6 +13,7 @@ import akka.actor.Props
 import akka.actor.actorRef2Scala
 import akka.testkit.TestActorRef
 import akka.testkit.TestProbe
+import kalmanb.gridlock.util.AkkaSpec
 
 class LockableActorTest extends AkkaSpec {
   import LockManager._

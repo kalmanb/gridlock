@@ -1,7 +1,6 @@
 package kalmanb.gridlock
 
 import scala.concurrent.duration.DurationInt
-
 import LockManager.LockAcquired
 import LockManager.NoLockAvailable
 import LockManager.ReleaseLock
@@ -9,6 +8,7 @@ import LockManager.RequestLock
 import akka.actor.Props
 import akka.actor.actorRef2Scala
 import akka.testkit.TestActorRef
+import kalmanb.gridlock.util.AkkaSpec
 
 class LockManagerTest extends AkkaSpec {
 import LockManager._

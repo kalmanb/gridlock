@@ -1,9 +1,6 @@
-package kalmanb.gridlock
-
-import org.scalatest.Finders
+package kalmanb.gridlock.util
 import org.scalatest.FunSpec
 import org.scalatest.matchers.ShouldMatchers
-
 import akka.actor.ActorSystem
 import akka.testkit.ImplicitSender
 import akka.testkit.TestKit

@@ -1,5 +1,7 @@
 package kalmanb.gridlock
 
+import kalmanb.gridlock.util.AkkaSpec
+
 class SingleRunnerTest extends AkkaSpec {
 
   describe("single runner") {
