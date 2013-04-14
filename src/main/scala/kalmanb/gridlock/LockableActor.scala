@@ -16,14 +16,13 @@ import akka.dispatch.OnComplete
  */
 abstract class LockableActor(
   lockManager: ActorRef,
-  lockWaitTimeout: FiniteDuration = 5 minutes)
+  lockWaitTimeout: FiniteDuration = 5 seconds)
     extends Actor with ActorLogging {
 
   import LockManager._
   val lockIdDefault = UUID.randomUUID
   def lockId(message: Any) = lockIdDefault
-  /** Can override this */
-
+  
   implicit def akkaLockTimeout: Timeout = lockWaitTimeout
   implicit def executionContext = context.dispatcher
 

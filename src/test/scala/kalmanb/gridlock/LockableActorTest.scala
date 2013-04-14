@@ -18,16 +18,7 @@ import kalmanb.gridlock.util.AkkaSpec
 class LockableActorTest extends AkkaSpec {
   import LockManager._
 
-  describe("lockable") {
-    it("should request a lock from the manager") {
-      val lockManager = TestProbe()
-      val lockingWorker = TestActorRef[LockableActor](Props(new LockableActor(lockManager.ref) {
-        def work(message: Any, id: Any) = Future()
-      }))
-      lockingWorker ! "Start"
-
-      lockManager.expectMsg(RequestLock(lockingWorker.underlyingActor.lockId("")))
-    }
+  describe("lockable actor") {
 
     it("should do 'work' if it gets a lock") {
       val lockManager = system.actorOf(Props(new Actor {
